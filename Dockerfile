@@ -16,33 +16,39 @@ RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     && rm -rf /var/lib/apt/lists/*
 
-# Create a secure non-root user with UID 1000
-RUN useradd -m -u 1000 user
-USER user
+# Set up working directory as root
+WORKDIR /app
 
-# Set home environment variables and PATH
-ENV HOME=/home/user \
-    PATH=/home/user/.local/bin:$PATH \
-    PYTHONPATH=/home/user/app
+# Install CPU-only PyTorch and torchvision globally (as root) to prevent permission errors
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.3.0 torchvision==0.18.0
 
-WORKDIR /home/user/app
+# Copy requirements.txt and install dependencies globally
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install CPU-only PyTorch and torchvision first as user
-RUN pip install --no-cache-dir --user --index-url https://download.pytorch.org/whl/cpu torch==2.3.0 torchvision==0.18.0
+# Copy all source files
+COPY . .
 
-# Copy requirements.txt and install python requirements
-COPY --chown=user:user requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
-
-# Copy the application source code files and assign ownership to the user
-COPY --chown=user:user . .
-
-# Create the persistent violations and static assets directories
+# Create the violations and static asset directories
 RUN mkdir -p violations static/css static/js
 
-# Expose Hugging Face default port
+# Set up a secure non-root user with UID 1000 (Hugging Face requirement)
+# and assign full ownership of /app to the user
+RUN useradd -m -u 1000 user && \
+    chown -R user:user /app
+
+# Switch execution context to the secure non-root user for container runtime
+USER user
+
+# Set PYTHONPATH and PATH
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH \
+    PYTHONPATH=/app
+
+# Expose default port
 EXPOSE 7860
 ENV PORT=7860
 
-# Launch application using run.py on exposed host and port
+# Launch application using run.py on exposed host and dynamic port
 CMD ["python", "run.py", "--host", "0.0.0.0", "--port", "7860"]
