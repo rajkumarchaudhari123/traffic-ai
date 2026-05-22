@@ -1,0 +1,44 @@
+╔══════════════════════════════════════════════════════════════╗
+║         GOVERNMENT OF INDIA – TRAFFIC DEPARTMENT            ║
+║              E-CHALLAN NOTIFICATION SYSTEM                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+CHALLAN ID    : ECHXC37558221
+ISSUED ON     : 2026-05-22T09:15:26.778275
+DUE DATE      : 28-05-2026
+
+──────────────────────────────────────────────────────────────
+VEHICLE DETAILS
+──────────────────────────────────────────────────────────────
+Vehicle Number : TRAFFIC
+Location       : Outer Ring Road, Bengaluru
+
+──────────────────────────────────────────────────────────────
+VIOLATION DETAILS
+──────────────────────────────────────────────────────────────
+Violation Type : No Helmet & No Seatbelt
+Description    : Multiple violations detected – helmet and seatbelt missing.
+
+──────────────────────────────────────────────────────────────
+FINE DETAILS
+──────────────────────────────────────────────────────────────
+Fine Amount    : ₹2000
+Payment Status : Pending
+Pay By         : 28-05-2026
+
+──────────────────────────────────────────────────────────────
+ISSUING AUTHORITY
+──────────────────────────────────────────────────────────────
+Issued By      : Sub-Inspector Priya Sharma (Badge #TR-2017)
+Court          : Judicial Magistrate, Mumbai
+
+──────────────────────────────────────────────────────────────
+Proof Image    : No_Helmet_&_No_Seatbelt_20260522_091526_770266.jpg
+──────────────────────────────────────────────────────────────
+
+NOTE: Failure to pay within due date may result in additional
+penalties and legal proceedings.
+
+Pay online at: https://echallan.parivahan.gov.in
+
+══════════════════════════════════════════════════════════════

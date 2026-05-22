@@ -1,0 +1,44 @@
+╔══════════════════════════════════════════════════════════════╗
+║         GOVERNMENT OF INDIA – TRAFFIC DEPARTMENT            ║
+║              E-CHALLAN NOTIFICATION SYSTEM                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+CHALLAN ID    : ECHMX02269206
+ISSUED ON     : 2026-05-22T09:00:46.432718
+DUE DATE      : 28-05-2026
+
+──────────────────────────────────────────────────────────────
+VEHICLE DETAILS
+──────────────────────────────────────────────────────────────
+Vehicle Number : TRAFFIC
+Location       : NH-48 Delhi-Gurugram Expressway
+
+──────────────────────────────────────────────────────────────
+VIOLATION DETAILS
+──────────────────────────────────────────────────────────────
+Violation Type : No Seatbelt
+Description    : Occupant detected without seatbelt fastened.
+
+──────────────────────────────────────────────────────────────
+FINE DETAILS
+──────────────────────────────────────────────────────────────
+Fine Amount    : ₹1000
+Payment Status : Pending
+Pay By         : 28-05-2026
+
+──────────────────────────────────────────────────────────────
+ISSUING AUTHORITY
+──────────────────────────────────────────────────────────────
+Issued By      : Head Constable Meena Joshi (Badge #TR-4088)
+Court          : Civil Court, Hyderabad
+
+──────────────────────────────────────────────────────────────
+Proof Image    : No_Seatbelt_20260522_090046_422664.jpg
+──────────────────────────────────────────────────────────────
+
+NOTE: Failure to pay within due date may result in additional
+penalties and legal proceedings.
+
+Pay online at: https://echallan.parivahan.gov.in
+
+══════════════════════════════════════════════════════════════

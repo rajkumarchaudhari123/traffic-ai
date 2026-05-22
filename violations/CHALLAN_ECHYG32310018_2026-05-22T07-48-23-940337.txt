@@ -1,0 +1,44 @@
+╔══════════════════════════════════════════════════════════════╗
+║         GOVERNMENT OF INDIA – TRAFFIC DEPARTMENT            ║
+║              E-CHALLAN NOTIFICATION SYSTEM                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+CHALLAN ID    : ECHYG32310018
+ISSUED ON     : 2026-05-22T07:48:23.940337
+DUE DATE      : 28-05-2026
+
+──────────────────────────────────────────────────────────────
+VEHICLE DETAILS
+──────────────────────────────────────────────────────────────
+Vehicle Number : TRAFFIC
+Location       : NH-48 Delhi-Gurugram Expressway
+
+──────────────────────────────────────────────────────────────
+VIOLATION DETAILS
+──────────────────────────────────────────────────────────────
+Violation Type : No Helmet
+Description    : Motorcyclist riding without helmet – safety violation.
+
+──────────────────────────────────────────────────────────────
+FINE DETAILS
+──────────────────────────────────────────────────────────────
+Fine Amount    : ₹1000
+Payment Status : Pending
+Pay By         : 28-05-2026
+
+──────────────────────────────────────────────────────────────
+ISSUING AUTHORITY
+──────────────────────────────────────────────────────────────
+Issued By      : Inspector Anil Verma (Badge #TR-3055)
+Court          : Metropolitan Magistrate Court, New Delhi
+
+──────────────────────────────────────────────────────────────
+Proof Image    : No_Helmet_20260522_074823_932825.jpg
+──────────────────────────────────────────────────────────────
+
+NOTE: Failure to pay within due date may result in additional
+penalties and legal proceedings.
+
+Pay online at: https://echallan.parivahan.gov.in
+
+══════════════════════════════════════════════════════════════

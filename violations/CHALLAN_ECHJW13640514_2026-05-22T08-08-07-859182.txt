@@ -1,0 +1,44 @@
+╔══════════════════════════════════════════════════════════════╗
+║         GOVERNMENT OF INDIA – TRAFFIC DEPARTMENT            ║
+║              E-CHALLAN NOTIFICATION SYSTEM                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+CHALLAN ID    : ECHJW13640514
+ISSUED ON     : 2026-05-22T08:08:07.859182
+DUE DATE      : 28-05-2026
+
+──────────────────────────────────────────────────────────────
+VEHICLE DETAILS
+──────────────────────────────────────────────────────────────
+Vehicle Number : TRAFFIC
+Location       : Rajpath, New Delhi
+
+──────────────────────────────────────────────────────────────
+VIOLATION DETAILS
+──────────────────────────────────────────────────────────────
+Violation Type : No Seatbelt
+Description    : Driver not wearing seatbelt – traffic rule violated.
+
+──────────────────────────────────────────────────────────────
+FINE DETAILS
+──────────────────────────────────────────────────────────────
+Fine Amount    : ₹1000
+Payment Status : Pending
+Pay By         : 28-05-2026
+
+──────────────────────────────────────────────────────────────
+ISSUING AUTHORITY
+──────────────────────────────────────────────────────────────
+Issued By      : Inspector Anil Verma (Badge #TR-3055)
+Court          : Judicial Magistrate, Mumbai
+
+──────────────────────────────────────────────────────────────
+Proof Image    : No_Seatbelt_20260522_080807_853676.jpg
+──────────────────────────────────────────────────────────────
+
+NOTE: Failure to pay within due date may result in additional
+penalties and legal proceedings.
+
+Pay online at: https://echallan.parivahan.gov.in
+
+══════════════════════════════════════════════════════════════

@@ -1,0 +1,44 @@
+╔══════════════════════════════════════════════════════════════╗
+║         GOVERNMENT OF INDIA – TRAFFIC DEPARTMENT            ║
+║              E-CHALLAN NOTIFICATION SYSTEM                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+CHALLAN ID    : ECHCJ79384548
+ISSUED ON     : 2026-05-22T08:57:08.967306
+DUE DATE      : 28-05-2026
+
+──────────────────────────────────────────────────────────────
+VEHICLE DETAILS
+──────────────────────────────────────────────────────────────
+Vehicle Number : TRAFFIC
+Location       : Eastern Express Highway, Mumbai
+
+──────────────────────────────────────────────────────────────
+VIOLATION DETAILS
+──────────────────────────────────────────────────────────────
+Violation Type : No Helmet
+Description    : Two-wheeler rider detected without protective headgear.
+
+──────────────────────────────────────────────────────────────
+FINE DETAILS
+──────────────────────────────────────────────────────────────
+Fine Amount    : ₹1000
+Payment Status : Pending
+Pay By         : 28-05-2026
+
+──────────────────────────────────────────────────────────────
+ISSUING AUTHORITY
+──────────────────────────────────────────────────────────────
+Issued By      : Inspector Anil Verma (Badge #TR-3055)
+Court          : Traffic Court, Bengaluru City
+
+──────────────────────────────────────────────────────────────
+Proof Image    : No_Helmet_20260522_085708_961295.jpg
+──────────────────────────────────────────────────────────────
+
+NOTE: Failure to pay within due date may result in additional
+penalties and legal proceedings.
+
+Pay online at: https://echallan.parivahan.gov.in
+
+══════════════════════════════════════════════════════════════

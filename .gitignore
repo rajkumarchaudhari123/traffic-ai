@@ -1,0 +1,29 @@
+# Python virtual environment
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local violation images and captured evidence
+violations/*.jpg
+violations/*.png
+violations/*.json
+
+# IDE / Editor config
+.vscode/
+.idea/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+ngrok.exe
+*.stackdump
+yolov8n.pt
+*.pt
+
+# Log files
+*.log
+.system_generated/

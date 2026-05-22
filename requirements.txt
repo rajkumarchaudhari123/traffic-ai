@@ -1,0 +1,30 @@
+# Smart Traffic AI – Requirements
+# Install with: pip install -r requirements.txt
+
+# ── Web Framework ──────────────────────────────────────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9
+jinja2==3.1.4
+websockets==12.0
+
+# ── Computer Vision & AI ───────────────────────────────────────────────────
+opencv-python==4.9.0.80
+numpy==1.26.4
+ultralytics==8.2.0          # YOLOv8
+torch==2.3.0
+torchvision==0.18.0
+
+# ── OCR ────────────────────────────────────────────────────────────────────
+easyocr==1.7.1
+# pytesseract==0.3.10        # Optional: uncomment if Tesseract installed
+
+# ── TensorFlow (optional integration) ─────────────────────────────────────
+# tensorflow==2.16.1         # Uncomment to enable TensorFlow integration
+# tensorflow-hub==0.16.1
+
+# ── Utilities ──────────────────────────────────────────────────────────────
+pillow==10.3.0
+aiofiles==23.2.1
+python-dotenv==1.0.1
+httpx==0.27.0

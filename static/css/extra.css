@@ -1,0 +1,35 @@
+/* Smart Traffic AI – Supplemental Styles */
+/* These extend dashboard.html for any additional pages or embeds */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&display=swap');
+
+:root {
+  --bg-void:      #040810;
+  --accent-cyan:  #00e5ff;
+  --accent-red:   #ff1744;
+  --accent-amber: #ffd600;
+  --accent-green: #00e676;
+  --font-hud:     'Share Tech Mono', monospace;
+  --font-title:   'Orbitron', sans-serif;
+}
+
+/* ── Reusable badge ─────────────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 1px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+.badge-red    { background: rgba(255,23,68,.15);  color: #ff1744; border: 1px solid rgba(255,23,68,.35); }
+.badge-amber  { background: rgba(255,214,0,.12);  color: #ffd600; border: 1px solid rgba(255,214,0,.35); }
+.badge-cyan   { background: rgba(0,229,255,.1);   color: #00e5ff; border: 1px solid rgba(0,229,255,.35); }
+.badge-green  { background: rgba(0,230,118,.1);   color: #00e676; border: 1px solid rgba(0,230,118,.35); }
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,229,255,.2); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,229,255,.4); }
