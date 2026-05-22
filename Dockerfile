@@ -1,19 +1,11 @@
-# Use official lightweight Python image
+# Use official lightweight Python 3.10 slim image
 FROM python:3.10-slim
 
-# Set environment variables to optimize Python execution in container
+# Set environment variables for optimized execution
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONIOENCODING=utf-8 \
-    HOME=/home/user \
-    PATH=/home/user/.local/bin:$PATH
+    PYTHONIOENCODING=utf-8
 
-# Create a non-root user (Hugging Face requirement for security)
-RUN useradd -m -u 1000 user
-
-# Set the working directory inside the container
-WORKDIR /home/user/app
-
-# Install system dependencies required for OpenCV and Tesseract OCR
+# Install system dependencies required for OpenCV, PyTorch, and Tesseract OCR
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
@@ -23,27 +15,40 @@ RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements.txt first to leverage Docker cache
-COPY --chown=user:user requirements.txt .
+# Set up a temporary build directory for pip caching and package installation
+WORKDIR /build
 
-# Install python dependencies as the non-root user
+# Install PyTorch CPU-only first as root to avoid downloading massive 2.5GB CUDA wheels
+RUN pip install --no-cache-dir torch==2.3.0 torchvision==0.18.0 --extra-index-url https://download.pytorch.org/whl/cpu
+
+# Copy requirements.txt
+COPY requirements.txt .
+
+# Install all other python dependencies as root
+RUN pip install --no-cache-dir -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+
+# Create a secure non-root user with UID 1000 (Hugging Face standard)
+RUN useradd -m -u 1000 user
+
+# Switch execution context to the secure non-root user
 USER user
 
-# Install CPU-only PyTorch first to prevent downloading the massive CUDA build (~2.5GB) which exceeds Hugging Face's disk space and RAM limits.
-RUN pip install --no-cache-dir --user torch==2.3.0 torchvision==0.18.0 --extra-index-url https://download.pytorch.org/whl/cpu
+# Set home environment variables and PATH
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH \
+    PYTHONPATH=/home/user/app
 
-RUN pip install --no-cache-dir --user -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+# Set the secure runtime application folder (automatically created and owned by user since we are USER user)
+WORKDIR /home/user/app
 
-# Tesseract OCR language data is pre-installed with the system package, no dynamic runtime pre-caching required.
-
-# Copy the rest of the project files
+# Copy the application source code files and assign ownership to the user
 COPY --chown=user:user . .
 
-# Create persistent output and caching directories and ensure proper permissions
-RUN mkdir -p violations static/css static/js && chmod -R 777 violations static
+# Create the persistent violations and static assets directories
+RUN mkdir -p violations static/css static/js
 
-# Expose the default port for Hugging Face Spaces
+# Expose Hugging Face Space port
 EXPOSE 7860
 
-# Start the application using run.py on the exposed port
+# Launch application using run.py on exposed port
 CMD ["python", "run.py", "--host", "0.0.0.0", "--port", "7860"]
