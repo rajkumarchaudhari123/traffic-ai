@@ -47,8 +47,11 @@ COPY --chown=user:user . .
 # Create the persistent violations and static assets directories
 RUN mkdir -p violations static/css static/js
 
-# Expose Hugging Face Space port
+# Expose default port
 EXPOSE 7860
 
-# Launch application using run.py on exposed port
-CMD ["python", "run.py", "--host", "0.0.0.0", "--port", "7860"]
+# Default port environment variable (can be overridden by cloud providers like Railway/Render)
+ENV PORT=7860
+
+# Launch application using run.py on exposed host and dynamic port
+CMD ["python", "run.py", "--host", "0.0.0.0"]

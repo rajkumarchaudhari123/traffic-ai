@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 def main():
     parser = argparse.ArgumentParser(description="Smart Traffic AI Server")
     parser.add_argument("--host",   default="127.0.0.1", help="Host to bind (default: 127.0.0.1)")
-    parser.add_argument("--port",   default=8000, type=int, help="Port to listen on (default: 8000)")
+    parser.add_argument("--port",   default=int(os.environ.get("PORT", 8000)), type=int, help="Port to listen on (default: 8000)")
     parser.add_argument("--reload", action="store_true",   help="Enable auto-reload for development")
     args = parser.parse_args()
 
