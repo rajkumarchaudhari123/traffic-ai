@@ -3,7 +3,8 @@ FROM python:3.10-slim
 
 # Set environment variables for optimized execution
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONIOENCODING=utf-8
+    PYTHONIOENCODING=utf-8 \
+    PIP_DEFAULT_TIMEOUT=1000
 
 # Install system dependencies required for OpenCV, PyTorch, and Tesseract OCR
 RUN apt-get update && apt-get install -y \
@@ -29,8 +30,8 @@ ENV HOME=/home/user \
 # Set the secure runtime application folder (automatically created and owned by user since we are USER user)
 WORKDIR /home/user/app
 
-# Install CPU-only PyTorch first as user (requires non-root context for sandboxed network access)
-RUN pip install --no-cache-dir --user torch==2.3.0 torchvision==0.18.0 --extra-index-url https://download.pytorch.org/whl/cpu
+# Install CPU-only PyTorch first as user using --index-url to force CPU wheel selection
+RUN pip install --no-cache-dir --user --index-url https://download.pytorch.org/whl/cpu torch==2.3.0 torchvision==0.18.0
 
 # Install lightweight dependencies of ultralytics to avoid heavy torch re-downloads
 RUN pip install --no-cache-dir --user matplotlib pyyaml tqdm pandas seaborn psutil py-cpuinfo scipy requests
