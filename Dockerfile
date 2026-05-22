@@ -27,6 +27,10 @@ COPY --chown=user:user requirements.txt .
 
 # Install python dependencies as the non-root user
 USER user
+
+# Install CPU-only PyTorch first to prevent downloading the massive CUDA build (~2.5GB) which exceeds Hugging Face's disk space and RAM limits.
+RUN pip install --no-cache-dir --user torch==2.3.0 torchvision==0.18.0 --extra-index-url https://download.pytorch.org/whl/cpu
+
 RUN pip install --no-cache-dir --user -r requirements.txt
 
 # Pre-cache EasyOCR English language models during build to ensure instant application startup
