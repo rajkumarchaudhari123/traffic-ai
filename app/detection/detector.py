@@ -95,24 +95,24 @@ class TrafficViolationDetector:
             if custom_weights.exists():
                 try:
                     self.model = YOLO(str(custom_weights))
-                    print("✅  Loaded custom YOLOv8 weights")
+                    print("[OK] Loaded custom YOLOv8 weights")
                     return
                 except Exception as e:
-                    print(f"⚠️  Custom weights failed: {e}")
+                    print(f"[WARN] Custom weights failed: {e}")
             try:
                 self.model = YOLO("yolov8n.pt")  # download pretrained nano
-                print("✅  Loaded YOLOv8n pretrained model")
+                print("[OK] Loaded YOLOv8n pretrained model")
             except Exception as e:
-                print(f"⚠️  YOLOv8 unavailable: {e}")
+                print(f"[WARN] YOLOv8 unavailable: {e}")
         else:
-            print("ℹ️  YOLOv8 not installed – using demo simulation")
+            print("[INFO] YOLOv8 not installed - using demo simulation")
 
         if OCR_AVAILABLE:
             try:
                 self.ocr_reader = easyocr.Reader(["en"], gpu=False, verbose=False)
-                print("✅  EasyOCR loaded")
+                print("[OK] EasyOCR loaded")
             except Exception as e:
-                print(f"⚠️  EasyOCR failed: {e}")
+                print(f"[WARN] EasyOCR failed: {e}")
 
     # ── Real Frame Processing ──────────────────────────────────────────────────
 

@@ -10,8 +10,9 @@ import os
 import sys
 from pathlib import Path
 
-# Ensure project root is on the path
+# Ensure project root and app directory are on the path
 sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent / "app"))
 
 
 def main():
@@ -28,18 +29,18 @@ def main():
     try:
         import uvicorn
     except ImportError:
-        print("❌  uvicorn not installed.  Run:  pip install uvicorn[standard]")
+        print("[ERROR] uvicorn not installed.  Run:  pip install uvicorn[standard]")
         sys.exit(1)
 
     print("""
-╔══════════════════════════════════════════════════════════════╗
-║         SMART TRAFFIC AI – COMMAND CENTER                   ║
-║         Real-Time Helmet & Seatbelt Detection               ║
-╚══════════════════════════════════════════════════════════════╝
++------------------------------------------------------------+
+|         SMART TRAFFIC AI - COMMAND CENTER                  |
+|         Real-Time Helmet & Seatbelt Detection              |
++------------------------------------------------------------+
 """)
-    print(f"  🌐  Dashboard  : http://{args.host}:{args.port}")
-    print(f"  📡  API Docs   : http://{args.host}:{args.port}/docs")
-    print(f"  🔌  WebSocket  : ws://{args.host}:{args.port}/ws")
+    print(f"  Dashboard  : http://{args.host}:{args.port}")
+    print(f"  API Docs   : http://{args.host}:{args.port}/docs")
+    print(f"  WebSocket  : ws://{args.host}:{args.port}/ws")
     print()
 
     uvicorn.run(

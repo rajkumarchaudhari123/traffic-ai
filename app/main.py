@@ -265,5 +265,5 @@ async def demo_loop():
 async def startup_event():
     os.makedirs(str(BASE_DIR / "violations"), exist_ok=True)
     asyncio.create_task(demo_loop())
-    print("✅  Smart Traffic AI server started")
-    print("📊  Dashboard: http://localhost:8000")
+    print("[OK] Smart Traffic AI server started")
+    print("[INFO] Dashboard: http://localhost:8000")
