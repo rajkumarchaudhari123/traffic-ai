@@ -8,9 +8,7 @@ __pycache__/
 *.pyd
 
 # Local violation images and captured evidence
-violations/*.jpg
-violations/*.png
-violations/*.json
+violations/*
 
 # IDE / Editor config
 .vscode/
