@@ -13,13 +13,14 @@ RUN useradd -m -u 1000 user
 # Set the working directory inside the container
 WORKDIR /home/user/app
 
-# Install system dependencies required for OpenCV and EasyOCR
+# Install system dependencies required for OpenCV and Tesseract OCR
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
     libgomp1 \
     gcc \
     python3-dev \
+    tesseract-ocr \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements.txt first to leverage Docker cache
@@ -33,8 +34,7 @@ RUN pip install --no-cache-dir --user torch==2.3.0 torchvision==0.18.0 --extra-i
 
 RUN pip install --no-cache-dir --user -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 
-# Pre-cache EasyOCR English language models during build to ensure instant application startup
-RUN python -c "import easyocr; easyocr.Reader(['en'])"
+# Tesseract OCR language data is pre-installed with the system package, no dynamic runtime pre-caching required.
 
 # Copy the rest of the project files
 COPY --chown=user:user . .

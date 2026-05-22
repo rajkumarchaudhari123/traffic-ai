@@ -14,8 +14,8 @@ numpy==1.26.4
 ultralytics==8.2.0          # YOLOv8
 
 # ── OCR ────────────────────────────────────────────────────────────────────
-easyocr==1.7.1
-# pytesseract==0.3.10        # Optional: uncomment if Tesseract installed
+# easyocr==1.7.1
+pytesseract==0.3.10        # Optional: uncomment if Tesseract installed
 
 # ── TensorFlow (optional integration) ─────────────────────────────────────
 # tensorflow==2.16.1         # Uncomment to enable TensorFlow integration
