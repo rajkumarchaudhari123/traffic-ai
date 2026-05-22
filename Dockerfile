@@ -29,14 +29,20 @@ ENV HOME=/home/user \
 # Set the secure runtime application folder (automatically created and owned by user since we are USER user)
 WORKDIR /home/user/app
 
-# Copy requirements.txt and set ownership to user
-COPY --chown=user:user requirements.txt .
-
 # Install CPU-only PyTorch first as user (requires non-root context for sandboxed network access)
 RUN pip install --no-cache-dir --user torch==2.3.0 torchvision==0.18.0 --extra-index-url https://download.pytorch.org/whl/cpu
 
-# Install all other python dependencies as user
-RUN pip install --no-cache-dir --user -r requirements.txt
+# Install lightweight dependencies of ultralytics to avoid heavy torch re-downloads
+RUN pip install --no-cache-dir --user matplotlib pyyaml tqdm pandas seaborn psutil py-cpuinfo scipy requests
+
+# Copy requirements.txt and set ownership to user
+COPY --chown=user:user requirements.txt .
+
+# Install all other python requirements as user
+RUN pip install --no-cache-dir --user fastapi uvicorn[standard] python-multipart jinja2 websockets opencv-python-headless numpy pytesseract pillow aiofiles python-dotenv httpx
+
+# Install ultralytics with --no-deps to prevent pip from resolving and downloading heavy GPU torch wheels
+RUN pip install --no-cache-dir --user --no-deps ultralytics
 
 # Copy the application source code files and assign ownership to the user
 COPY --chown=user:user . .
