@@ -5,7 +5,7 @@ FROM python:3.10-slim
 ENV PYTHONUNBUFFERED=1 \
     PYTHONIOENCODING=utf-8
 
-# Install system dependencies required for OpenCV and Tesseract OCR
+# Install system dependencies required for OpenCV, PyTorch, and Tesseract OCR
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
@@ -14,21 +14,6 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     tesseract-ocr \
     && rm -rf /var/lib/apt/lists/*
-
-# Set up a temporary build directory
-WORKDIR /build
-
-# Upgrade pip to the latest memory-efficient version first
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
-
-# Install PyTorch and Torchvision from standard PyPI (bypassing restricted custom index URLs)
-RUN pip install --no-cache-dir torch==2.3.0 torchvision==0.18.0
-
-# Copy requirements.txt
-COPY requirements.txt .
-
-# Install all other python dependencies from standard PyPI
-RUN pip install --no-cache-dir -r requirements.txt
 
 # Create a secure non-root user with UID 1000 (Hugging Face standard)
 RUN useradd -m -u 1000 user
@@ -43,6 +28,15 @@ ENV HOME=/home/user \
 
 # Set the secure runtime application folder (automatically created and owned by user since we are USER user)
 WORKDIR /home/user/app
+
+# Copy requirements.txt and set ownership to user
+COPY --chown=user:user requirements.txt .
+
+# Install CPU-only PyTorch first as user (requires non-root context for sandboxed network access)
+RUN pip install --no-cache-dir --user torch==2.3.0 torchvision==0.18.0 --extra-index-url https://download.pytorch.org/whl/cpu
+
+# Install all other python dependencies as user
+RUN pip install --no-cache-dir --user -r requirements.txt
 
 # Copy the application source code files and assign ownership to the user
 COPY --chown=user:user . .
