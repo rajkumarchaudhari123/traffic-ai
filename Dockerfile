@@ -48,7 +48,6 @@ ENV HOME=/home/user \
 
 # Expose default port
 EXPOSE 7860
-ENV PORT=7860
 
 # Launch application using run.py on exposed host and dynamic port
-CMD ["python", "run.py", "--host", "0.0.0.0", "--port", "7860"]
+CMD ["python", "run.py", "--host", "0.0.0.0"]
