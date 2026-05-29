@@ -183,6 +183,86 @@ class TrafficViolationDetector:
 
         return annotated, violations
 
+    def process_static_image(self, b64_str: str) -> dict:
+        """
+        Processes a static selfie base64 image captured by the client webcam.
+        Detects bare faces. If a bare face is found, it is a 'No Helmet' violation.
+        Crops the face, annotates the image, and saves the proof.
+        """
+        import base64
+        
+        # Strip header if present
+        if "," in b64_str:
+            b64_str = b64_str.split(",")[1]
+            
+        # Decode base64 to numpy array
+        img_bytes = base64.b64decode(b64_str)
+        nparr = np.frombuffer(img_bytes, np.uint8)
+        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        if frame is None:
+            return {"violation_type": None, "face_detected": False, "message": "Failed to decode image"}
+
+        annotated = frame.copy()
+        
+        try:
+            # Load Haar cascade face detector
+            face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(60, 60))
+            
+            if len(faces) > 0:
+                # Bare face detected -> No Helmet!
+                # We crop the first detected face for the e-challan
+                x, y, w, h = faces[0]
+                
+                # Add padding to cropped face for better aesthetics
+                h_img, w_img = frame.shape[:2]
+                pad_y = int(h * 0.2)
+                pad_x = int(w * 0.2)
+                y1 = max(0, y - pad_y)
+                y2 = min(h_img, y + h + pad_y)
+                x1 = max(0, x - pad_x)
+                x2 = min(w_img, x + w + pad_x)
+                
+                cropped_face = frame[y1:y2, x1:x2]
+                _, face_buf = cv2.imencode(".jpg", cropped_face)
+                face_b64 = base64.b64encode(face_buf).decode("utf-8")
+                
+                # Draw red box and HUD indicators on the annotated frame
+                for (fx, fy, fw, fh) in faces:
+                    cv2.rectangle(annotated, (fx, fy), (fx+fw, fy+fh), (0, 0, 255), 2)
+                    cv2.rectangle(annotated, (fx, fy - 25), (fx + 130, fy), (0, 0, 255), -1)
+                    cv2.putText(annotated, "NO HELMET", (fx + 5, fy - 7),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 2)
+                
+                cv2.putText(annotated, "ALERT: Bare face detected (No Helmet)!", (15, 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 255), 2)
+                
+                # Stamp the final proof image
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+                img_filename = f"No_Helmet_Selfie_{timestamp}.jpg"
+                img_path = self.violations_dir / img_filename
+                
+                self._stamp_violation_image(annotated, "No Helmet", "SELFIE-CAM")
+                cv2.imwrite(str(img_path), annotated)
+                
+                return {
+                    "violation_type": "No Helmet",
+                    "face_detected": True,
+                    "cropped_face_b64": face_b64,
+                    "image": img_filename,
+                    "plate": "SELFIE-CAM",
+                    "fine": 1000,
+                    "location": "Spot-Check Selfie Scanner",
+                    "message": "Instant selfie camera capture – bare face detected (riding safety helmet missing).",
+                    "timestamp": datetime.now().isoformat()
+                }
+        except Exception as e:
+            print(f"[ERROR] Static scanner failed: {e}")
+            
+        return {"violation_type": None, "face_detected": False, "message": "Helmet detected or no bare face visible"}
+
     def _parse_yolo_results(self, result, original_frame: np.ndarray):
         """Parse YOLOv8 results and extract violations."""
         violations = []

@@ -21,9 +21,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi import Request
 
-from detection.detector import TrafficViolationDetector
-from utils.challan import ChallanGenerator
-from utils.state import SystemState
+from .detection.detector import TrafficViolationDetector
+from .utils.challan import ChallanGenerator
+from .utils.state import SystemState
 
 # ─── App Setup ────────────────────────────────────────────────────────────────
 
@@ -126,6 +126,43 @@ async def trigger_demo_violation(violation_type: str):
         "data": {**result, "challan": challan},
     })
     return {"status": "triggered", "violation": result, "challan": challan}
+
+
+@app.post("/api/scan-photo")
+async def scan_photo(payload: dict):
+    """Scan static webcam selfie image captured by operator."""
+    b64_image = payload.get("image")
+    if not b64_image:
+        raise HTTPException(400, "Missing image payload")
+        
+    result = detector.process_static_image(b64_image)
+    
+    if result.get("face_detected"):
+        # Issue an e-challan for No Helmet
+        challan = challan_gen.generate(result)
+        state.record_violation(result, challan)
+        
+        # Broadcast to dashboard clients
+        await broadcast({
+            "type": "violation",
+            "data": {**result, "challan": challan},
+        })
+        await broadcast({
+            "type": "log",
+            "message": f"🚨 SELFIE VIOLATION – Bare face detected (No Helmet)! E-Challan issued.",
+            "level": "alert"
+        })
+        return {
+            "status": "violation",
+            "violation": result,
+            "challan": challan,
+            "cropped_face": result.get("cropped_face_b64")
+        }
+        
+    return {
+        "status": "safe",
+        "message": "Helmet detected or no bare face visible – Operator is safe."
+    }
 
 
 @app.post("/api/camera/start")
@@ -264,6 +301,19 @@ async def demo_loop():
 @app.on_event("startup")
 async def startup_event():
     os.makedirs(str(BASE_DIR / "violations"), exist_ok=True)
-    asyncio.create_task(demo_loop())
-    print("[OK] Smart Traffic AI server started")
-    print("[INFO] Dashboard: http://localhost:8000")
+    # Only start demo_loop if camera is not already active
+    if not state.camera_active:
+        asyncio.create_task(demo_loop())
+    print("✅  Smart Traffic AI server started")
+    print("📊  Dashboard: http://localhost:8000")
+
+
+if __name__ == "__main__":
+    # Allow starting the server via `python app/main.py`
+    try:
+        import uvicorn
+
+        uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    except Exception:
+        # Fall back to a simple message if uvicorn is not available
+        print("Run the app with: uvicorn app.main:app --reload")

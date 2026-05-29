@@ -212,6 +212,59 @@ header {
 .btn-amber { color:var(--accent-amber); border-color:rgba(255,214,0,0.4); }
 .btn-amber:hover { background:rgba(255,214,0,0.08); }
 
+/* ── Tab Controls ── */
+.feed-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: -1px;
+  z-index: 11;
+}
+.feed-tab {
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 8px 16px;
+  border: 1px solid var(--border-dim);
+  border-bottom: none;
+  background: rgba(4, 8, 16, 0.6);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.feed-tab.active {
+  color: var(--accent-cyan);
+  background: var(--bg-panel);
+  border-color: var(--border-glow);
+  border-top: 2px solid var(--accent-cyan);
+  text-shadow: 0 0 10px rgba(0,229,255,0.4);
+}
+.feed-tab:hover:not(.active) {
+  color: var(--text-primary);
+  background: rgba(0,229,255,0.03);
+}
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* ── Glowing Laser Sweep Overlay ── */
+.laser-line {
+  position: absolute; left: 0; right: 0; height: 3px;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 15px var(--accent-cyan);
+  animation: sweep 2s infinite ease-in-out;
+}
+@keyframes sweep {
+  0% { top: 0%; }
+  50% { top: 100%; }
+  100% { top: 0%; }
+}
+
 .video-wrapper {
   flex:1; position:relative; background:#000;
   display:flex; align-items:center; justify-content:center;
@@ -597,24 +650,56 @@ header {
 
   <!-- VIDEO FEED -->
   <div class="feed-panel">
-    <div class="panel-header">
-      <span class="panel-title">◈ LIVE CCTV FEED – CAM 01</span>
-      <div class="panel-actions">
+    <div class="panel-header" style="padding-bottom: 0; border-bottom: none;">
+      <div class="feed-tabs">
+        <button class="feed-tab active" id="tabCctv" onclick="switchTab('cctv')">◈ CCTV Stream</button>
+        <button class="feed-tab" id="tabSelfie" onclick="switchTab('selfie')">◈ Spot-Check Scanner</button>
+      </div>
+      <div class="panel-actions" id="cctvActions">
         <button class="btn btn-cyan" onclick="startCamera('0')">▶ WEBCAM</button>
         <button class="btn btn-cyan" onclick="startCamera('helmet_demo')">🎭 HELMET CAM</button>
         <button class="btn btn-amber" onclick="startCamera('demo')">⬡ DEMO MODE</button>
         <button class="btn btn-red" onclick="stopCamera()">■ STOP</button>
       </div>
+      <div class="panel-actions" id="selfieActions" style="display: none;">
+        <button class="btn btn-cyan" id="startSelfieBtn" onclick="activateSelfieCam()">▶ ACTIVATE CAMERA</button>
+        <button class="btn btn-amber" id="scanSelfieBtn" onclick="captureAndScan()" disabled>📸 CAPTURE & SCAN</button>
+        <button class="btn btn-red" id="stopSelfieBtn" onclick="deactivateSelfieCam()" disabled>■ STOP</button>
+      </div>
     </div>
     <div class="activity-bar" id="activityBar"></div>
-    <div class="video-wrapper">
-      <img id="videoFeed" src="" alt="" style="display:none"/>
-      <div class="no-feed" id="noFeed">
-        <div class="icon">⬡</div>
-        <div>AWAITING CAMERA FEED</div>
-        <div style="margin-top:8px;font-size:9px;opacity:.6">CLICK ▶ WEBCAM OR ⬡ DEMO MODE TO BEGIN</div>
+    <div class="video-wrapper" style="position: relative;">
+      <!-- CCTV Tab Content -->
+      <div id="cctvContent" class="tab-content active" style="width:100%; height:100%; display: flex; align-items: center; justify-content: center;">
+        <img id="videoFeed" src="" alt="" style="display:none; width:100%; height:100%; object-fit:contain;"/>
+        <div class="no-feed" id="noFeed">
+          <div class="icon">⬡</div>
+          <div>AWAITING CAMERA FEED</div>
+          <div style="margin-top:8px;font-size:9px;opacity:.6">CLICK ▶ WEBCAM OR ⬡ DEMO MODE TO BEGIN</div>
+        </div>
       </div>
-      <div class="video-hud">
+
+      <!-- Spot-Check Scanner Tab Content -->
+      <div id="selfieContent" class="tab-content" style="width:100%; height:100%; display: none; align-items: center; justify-content: center; position: relative;">
+        <video id="selfieVideo" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover; background: #000; display: none; transform: scaleX(-1);"></video>
+        <canvas id="selfieCanvas" style="display: none;"></canvas>
+        
+        <div class="no-feed" id="noSelfieFeed" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+          <div class="icon" style="color: var(--accent-cyan);">📸</div>
+          <div>SPOT-CHECK SELFIE SCANNER</div>
+          <div style="margin-top:8px;font-size:9px;opacity:.6">CLICK ▶ ACTIVATE CAMERA TO BEGIN SCANNING</div>
+        </div>
+
+        <!-- Glowing Laser Sweep Overlay -->
+        <div id="selfieLaser" class="laser-line" style="display: none; z-index: 15;"></div>
+        <div id="selfieScannerOverlay" style="display: none; position: absolute; inset: 0; background: rgba(0, 229, 255, 0.05); border: 2px solid var(--accent-cyan); pointer-events: none; z-index: 14;">
+          <div style="position: absolute; top: 10px; left: 10px; color: var(--accent-cyan); font-family: var(--font-hud); font-size: 10px; letter-spacing: 1px; text-shadow: 0 0 10px var(--accent-cyan);">[ SELFIE SCANNER ACTIVE ]</div>
+          <div style="position: absolute; bottom: 10px; right: 10px; color: var(--accent-cyan); font-family: var(--font-hud); font-size: 10px; letter-spacing: 1px;">TELEMETRY LINK: ONLINE</div>
+        </div>
+      </div>
+
+      <!-- Shared video HUD and animations -->
+      <div class="video-hud" style="z-index: 10;">
         <div class="scan-line"></div>
         <div class="corner tl"></div>
         <div class="corner tr"></div>
@@ -704,6 +789,8 @@ let ws = null;
 let latestChallan = null;
 let statsInterval = null;
 let startTime = Date.now();
+let modalOpen = false;
+let selfieStream = null;
 
 // ── Clock ──────────────────────────────────────────────────────────────────
 function updateClock() {
@@ -956,6 +1043,168 @@ async function stopCamera() {
   addLog('warn', '■ Camera stopped by operator');
 }
 
+// ── Tab & Selfie Camera Management ──────────────────────────────────────────
+let activeTab = "cctv";
+
+function switchTab(tab) {
+  if (activeTab === tab) return;
+  activeTab = tab;
+
+  // Deactivate active feeds/cameras when switching
+  if (tab === "selfie") {
+    stopCamera(); // Stop standard CCTV
+    
+    document.getElementById('tabCctv').classList.remove('active');
+    document.getElementById('tabSelfie').classList.add('active');
+    
+    document.getElementById('cctvContent').style.display = 'none';
+    document.getElementById('selfieContent').style.display = 'flex';
+    
+    document.getElementById('cctvActions').style.display = 'none';
+    document.getElementById('selfieActions').style.display = 'flex';
+    
+    document.getElementById('camStatus').textContent = '● SPOT-CHECK CAMERA READY';
+    addLog('info', '🎛️ Switched to Instant Spot-Checker tab');
+  } else {
+    deactivateSelfieCam(); // Stop selfie camera
+    
+    document.getElementById('tabSelfie').classList.remove('active');
+    document.getElementById('tabCctv').classList.add('active');
+    
+    document.getElementById('selfieContent').style.display = 'none';
+    document.getElementById('cctvContent').style.display = 'flex';
+    
+    document.getElementById('selfieActions').style.display = 'none';
+    document.getElementById('cctvActions').style.display = 'flex';
+    
+    document.getElementById('camStatus').textContent = '● CAMERA OFFLINE';
+    addLog('info', '🎛️ Switched to Live CCTV Stream tab');
+  }
+}
+
+async function activateSelfieCam() {
+  try {
+    addLog('info', '⏳ Requesting browser camera access...');
+    selfieStream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" }
+    });
+    
+    const video = document.getElementById('selfieVideo');
+    video.srcObject = selfieStream;
+    video.style.display = 'block';
+    
+    document.getElementById('noSelfieFeed').style.display = 'none';
+    document.getElementById('selfieScannerOverlay').style.display = 'block';
+    
+    // Update button states
+    document.getElementById('startSelfieBtn').disabled = true;
+    document.getElementById('scanSelfieBtn').disabled = false;
+    document.getElementById('stopSelfieBtn').disabled = false;
+    
+    document.getElementById('camStatus').textContent = '● SPOT-CHECK SCANNER ACTIVE';
+    document.getElementById('camStatus').style.color = 'var(--accent-cyan)';
+    addLog('info', '📷 Local webcam feed started successfully (Selfie Mode)');
+  } catch (err) {
+    addLog('warn', `❌ Camera access denied or failed: ${err.message}`);
+    showToast(`❌ Camera Error: ${err.message}`);
+  }
+}
+
+function deactivateSelfieCam() {
+  if (selfieStream) {
+    selfieStream.getTracks().forEach(track => track.stop());
+    selfieStream = null;
+  }
+  
+  const video = document.getElementById('selfieVideo');
+  video.srcObject = null;
+  video.style.display = 'none';
+  
+  document.getElementById('noSelfieFeed').style.display = 'flex';
+  document.getElementById('selfieScannerOverlay').style.display = 'none';
+  document.getElementById('selfieLaser').style.display = 'none';
+  
+  // Update button states
+  document.getElementById('startSelfieBtn').disabled = false;
+  document.getElementById('scanSelfieBtn').disabled = true;
+  document.getElementById('stopSelfieBtn').disabled = true;
+  
+  document.getElementById('camStatus').textContent = '● CAMERA OFFLINE';
+  document.getElementById('camStatus').style.color = '';
+  addLog('warn', '■ Local selfie camera stopped');
+}
+
+async function captureAndScan() {
+  if (!selfieStream) return;
+  
+  playAlert(); // Quick beep sound to indicate capture
+  addLog('warn', '⏳ Spot-check scan initiated – capturing frame...');
+  
+  // Show laser sweep line
+  const laser = document.getElementById('selfieLaser');
+  laser.style.display = 'block';
+  
+  // Grab frame from video
+  const video = document.getElementById('selfieVideo');
+  const canvas = document.getElementById('selfieCanvas');
+  const context = canvas.getContext('2d');
+  
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
+  
+  // Draw current video frame to canvas
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+  
+  // Disable button to prevent double scanning
+  document.getElementById('scanSelfieBtn').disabled = true;
+  
+  try {
+    const res = await fetch('/api/scan-photo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: dataUrl })
+    });
+    
+    const result = await res.json();
+    laser.style.display = 'none';
+    document.getElementById('scanSelfieBtn').disabled = false;
+    
+    if (result.status === 'violation') {
+      addLog('alert', `🚨 SPOT-CHECK VIOLATION: Bare face detected! Challan generated.`);
+      
+      // Flash screen red
+      const flash = document.getElementById('violationFlash');
+      flash.classList.remove('active');
+      void flash.offsetWidth;
+      flash.classList.add('active');
+      
+      // Update UI with challan details
+      if (result.challan) {
+        latestChallan = { ...result.challan, cropped_face_b64: result.cropped_face };
+        renderChallanPreview(latestChallan);
+        document.getElementById('viewChallanBtn').style.display = 'inline-block';
+        showChallanModal(latestChallan);
+      }
+      
+      showToast(`🚨 Spot-Check Violation: E-Challan Generated!`);
+      playAlert();
+      setTimeout(playAlert, 250); // Double beep for alert
+      
+      // Reload gallery to show new violation proof
+      setTimeout(loadGallery, 800);
+    } else {
+      addLog('info', '✅ Spot-Check: Helmet detected or no bare face visible – Operator Safe');
+      showToast('✅ Helmet Detected – Operator Safe!');
+    }
+  } catch (err) {
+    laser.style.display = 'none';
+    document.getElementById('scanSelfieBtn').disabled = false;
+    addLog('warn', `❌ Spot-check scan failed: ${err.message}`);
+    showToast(`❌ Scan Failed: ${err.message}`);
+  }
+}
+
 // ── Demo triggers ──────────────────────────────────────────────────────────
 async function triggerViolation(type) {
   addLog('info', `▶ Demo trigger: ${type.toUpperCase()}`);
@@ -974,10 +1223,21 @@ function renderChallanPreview(c) {
   `;
 }
 
-let modalOpen = false;
 function showChallanModal(c) {
   if (modalOpen) return;
+  
+  let faceImageHtml = "";
+  if (c.cropped_face_b64) {
+    faceImageHtml = `
+      <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:18px;">
+        <img src="data:image/jpeg;base64,${c.cropped_face_b64}" style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--accent-red); object-fit: cover; box-shadow: 0 0 20px rgba(255, 23, 68, 0.4); margin-bottom: 8px;" />
+        <span style="color:var(--accent-red); font-family:var(--font-hud); font-size:9px; letter-spacing:1px; text-transform:uppercase;">[ FACE EVIDENCE ATTACHED ]</span>
+      </div>
+    `;
+  }
+
   document.getElementById('modalContent').innerHTML = `
+    ${faceImageHtml}
     <div class="row"><span class="key">CHALLAN ID</span><span class="val">${c.challan_id}</span></div>
     <div class="row"><span class="key">ISSUED</span><span class="val">${new Date(c.issued_at).toLocaleString()}</span></div>
     <hr class="divider"/>
